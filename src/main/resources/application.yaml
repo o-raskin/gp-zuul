@@ -1,0 +1,83 @@
+
+#   Company domain
+company:
+  domain:
+    name: gmail.com
+
+#   Application
+app:
+  auth:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:4040/login
+
+spring:
+  application:
+    name: zuul
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+  datasource:
+#    todo: USE ANOTHER DB!!! THIS ONLY FOR START!!!
+    url: jdbc:postgresql://localhost:5441/postgres
+    username: postgres
+    password:
+  security:
+    oauth2:
+      resource:
+        filter-order: 3
+      client:
+        registration:
+          google:
+            client-id: 1474277588-78pkl6epmnpia0pql3c7ot753obmp6vp.apps.googleusercontent.com
+            client-secret: 1N8KnD1Xf1uxWAtX4Ld4X0xL
+            redirectUri: http://localhost:8099/oauth2/callback/google
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            authorizationUri: https://accounts.google.com/o/oauth2/auth?hd=${company.domain.name}
+            tokenUri: https://oauth2.googleapis.com/token
+            userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+
+
+server:
+  port: 8099
+
+#   Eureka
+eureka:
+  client:
+    enabled: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 10
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    appname: zuul
+    instance-id: zuul:${spring.application.instance-id:${random.value}}
+    prefer-ip-address: true
+
+  #   Allow use Spring Actuator with Spring Security
+  #management:
+  #  endpoints:
+  #    web:
+  #      exposure:
+  #        include: *
+  #      cors:
+  #        allowed-headers: *
+  #        allowed-methods: *
+  #        allowed-origins: *
+  #management.endpoints.web.cors.allow-credentials=true
+
+#   UI
+ui:
+  client:
+    http:
+      home: http://localhost:4040/
+
