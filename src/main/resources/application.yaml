@@ -23,8 +23,7 @@ spring:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
   datasource:
-#    todo: USE ANOTHER DB!!! THIS ONLY FOR START!!!
-    url: jdbc:postgresql://localhost:5441/postgres
+    url: jdbc:postgresql://localhost:5442/postgres
     username: postgres
     password:
   security:
