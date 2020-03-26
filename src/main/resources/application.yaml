@@ -5,6 +5,9 @@ company:
     name: gmail.com
 
 #   Application
+server:
+  port: 8099
+
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
@@ -19,9 +22,6 @@ spring:
   jpa:
     database: POSTGRESQL
     show-sql: true
-    hibernate:
-      ddl-auto: update
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
   datasource:
     url: jdbc:postgresql://localhost:5442/postgres
     username: postgres
@@ -45,10 +45,6 @@ spring:
             tokenUri: https://oauth2.googleapis.com/token
             userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
 
-
-server:
-  port: 8099
-
 #   Eureka
 eureka:
   client:
@@ -58,8 +54,8 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
   instance:
-    appname: zuul
-    instance-id: zuul:${spring.application.instance-id:${random.value}}
+    appname: gateway
+    instance-id: gateway:${spring.application.instance-id:${random.value}}
     prefer-ip-address: true
 
   #   Allow use Spring Actuator with Spring Security
@@ -74,9 +70,4 @@ eureka:
   #        allowed-origins: *
   #management.endpoints.web.cors.allow-credentials=true
 
-#   UI
-ui:
-  client:
-    http:
-      home: http://localhost:4040/
 

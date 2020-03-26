@@ -1,5 +1,6 @@
 package ru.olegraskin.sugateway.oauth2.security.oauth2;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -8,6 +9,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ru.olegraskin.sugateway.oauth2.exception.OAuth2AuthenticationProcessingException;
 import ru.olegraskin.sugateway.oauth2.model.AuthProvider;
@@ -17,14 +19,16 @@ import ru.olegraskin.sugateway.oauth2.security.UserPrincipal;
 import ru.olegraskin.sugateway.oauth2.security.oauth2.user.OAuth2UserInfo;
 import ru.olegraskin.sugateway.oauth2.security.oauth2.user.OAuth2UserInfoFactory;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
@@ -58,6 +62,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
+
+        user.setInCompanySince(LocalDate.now());
 
         return new UserPrincipal(user, oAuth2User.getAttributes());
     }

@@ -24,6 +24,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     private String password;
 
     @Getter
+    @Setter
     private Collection<? extends GrantedAuthority> authorities;
 
     @Getter
@@ -34,14 +35,14 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     public UserPrincipal(User user, Map<String, Object> attributes) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
         this.attributes = attributes;
     }
 

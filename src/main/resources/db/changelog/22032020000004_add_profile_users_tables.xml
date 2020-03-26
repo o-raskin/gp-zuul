@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="02032020000004" author="olegraskin">
+
+
+        <createTable tableName="followers_profile_users">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="user_id" references="users(id)"/>
+            </column>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="profile_id" references="profile(id)"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="user_id, profile_id"
+                       constraintName="pk_followers"
+                       schemaName="public"
+                       tableName="followers_profile_users"/>
+
+        <addUniqueConstraint
+                columnNames="user_id, profile_id"
+                constraintName="followers_unique_const"
+                tableName="followers_profile_users"/>
+
+
+
+        <createTable tableName="whitelist_profile_users">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="user_id" references="users(id)"/>
+            </column>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="profile_id" references="profile(id)"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="user_id, profile_id"
+                       constraintName="pk_whitelist"
+                       schemaName="public"
+                       tableName="whitelist_profile_users"/>
+
+        <addUniqueConstraint
+                columnNames="user_id, profile_id"
+                constraintName="whitelist_unique_const"
+                tableName="whitelist_profile_users"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <include file="db/changelog/21032020000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/22032020000000_user_add_position.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/22032020000001_profile_table.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/22032020000002_add_user_active_field.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/22032020000003_add_user_mentor_id_field.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/22032020000004_add_profile_users_tables.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/25032020000000_add_user_in_company_since_field.xml" relativeToChangelogFile="false"/>
+</databaseChangeLog>
