@@ -1,9 +1,8 @@
 package ru.olegraskin.sugateway.oauth2.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,15 +30,11 @@ public class Profile {
      */
     private String status;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinTable(
-            name = "followers_profile_users",
-            joinColumns = @JoinColumn(name = "profile_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER
     )
-    private Set<User> followers = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(
             name = "whitelist_profile_users",
             joinColumns = @JoinColumn(name = "profile_id"),

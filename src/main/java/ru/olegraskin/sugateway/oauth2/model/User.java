@@ -1,6 +1,6 @@
 package ru.olegraskin.sugateway.oauth2.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 import ru.olegraskin.sugateway.oauth2.security.Role;
 
 import javax.persistence.*;
@@ -56,21 +56,34 @@ public class User {
     @OneToOne
     private User mentor;
 
-    @ManyToMany
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.PERSIST)
     @JoinTable(
-            name = "followers_profile_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
+            name = "followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
     )
-    private Set<Profile> following = new HashSet<>();
+    private Set<User> following = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "whitelist_profile_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
-    )
-    private Set<Profile> accessibleProfiles = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(
+            mappedBy = "following",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER)
+    private Set<User> userFollowers = new HashSet<>();
+
+//    @EqualsAndHashCode.Exclude
+//    @ManyToMany(
+//            cascade = CascadeType.PERSIST,
+//            fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "whitelist_profile_users",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "profile_id")
+//    )
+//    private Set<Profile> accessibleProfiles = new HashSet<>();
 
     private boolean active = true;
 
@@ -79,4 +92,21 @@ public class User {
     private LocalDate futurePromotionDate;
 
     private LocalDate inCompanySince;
+
+    public void addFollower(User user) {
+        this.userFollowers.add(user);
+    }
+
+    public void removeFollower(User user) {
+        this.userFollowers.remove(user);
+    }
+
+    public void addFollowing(User user) {
+        this.following.add(user);
+    }
+
+    public void removeFollowing(User user) {
+        this.following.remove(user);
+    }
+
 }

@@ -3,13 +3,12 @@ package ru.olegraskin.sugateway.oauth2.controller;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.olegraskin.sugateway.oauth2.dto.SimpleUserDto;
 import ru.olegraskin.sugateway.oauth2.dto.UserDto;
 import ru.olegraskin.sugateway.oauth2.mapper.UserMapper;
 import ru.olegraskin.sugateway.oauth2.model.User;
+import ru.olegraskin.sugateway.oauth2.payload.FollowerRequest;
 import ru.olegraskin.sugateway.oauth2.security.CurrentUser;
 import ru.olegraskin.sugateway.oauth2.security.UserPrincipal;
 import ru.olegraskin.sugateway.oauth2.service.UserService;
@@ -34,6 +33,20 @@ public class UserController {
     public UserDto getUserById(@PathVariable("id") @NonNull Long id) {
         User user = userService.getUserById(id);
         return userMapper.entityToDto(user);
+    }
+
+    @PostMapping("/{id}/follow")
+    @PreAuthorize("hasRole('USER')")
+    public SimpleUserDto followUser(@PathVariable("id") Long userId, @RequestBody FollowerRequest payload) {
+        User user = userService.addFollowerToUser(userId, payload.getFollowerId());
+        return new SimpleUserDto(user.getId(), user.getName(), user.getImageUrl());
+    }
+
+    @PostMapping("/{id}/unfollow")
+    @PreAuthorize("hasRole('USER')")
+    public SimpleUserDto unFollowUser(@PathVariable("id") Long userId, @RequestBody FollowerRequest payload) {
+        User user = userService.removeFollowerToUser(userId, payload.getFollowerId());
+        return new SimpleUserDto(user.getId(), user.getName(), user.getImageUrl());
     }
 
 }

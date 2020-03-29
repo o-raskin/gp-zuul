@@ -29,9 +29,21 @@ public class ProfileServiceImpl implements ProfileService {
      * @param userId
      * @return profile
      */
-    public Profile getProfileByUserId(@NonNull Long userId) {
+    public Profile getProfileByUserId(@NonNull Long userId, User user) {
+
         Optional<Profile> optional = profileRepository.findProfileByUserId(userId);
-        return optional.orElseGet(() -> this.create(userId));
+        if (optional.isPresent()) {
+            Profile requestedProfile = optional.get();
+            if ((!requestedProfile.isVisibility() && requestedProfile.getWhitelist().contains(user)) ||
+                    requestedProfile.isVisibility() ||
+                    requestedProfile.getUser().equals(user)) {
+                return requestedProfile;
+            } else {
+                throw new ResourceNotFoundException("Profile", "id", userId);
+            }
+        } else {
+            return this.create(userId);
+        }
     }
 
     @Transactional
@@ -68,13 +80,10 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         Profile stored = optional.get();
-        stored.setFollowers(profile.getFollowers());
         stored.setWhitelist(profile.getWhitelist());
         stored.setStatus(profile.getStatus());
         stored.setVisibility(profile.isVisibility());
-        profileRepository.save(stored);
-
-        return stored;
+        return profileRepository.save(stored);
     }
 
 

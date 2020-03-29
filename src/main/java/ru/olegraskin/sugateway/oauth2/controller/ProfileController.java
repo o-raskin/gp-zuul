@@ -9,7 +9,10 @@ import ru.olegraskin.sugateway.oauth2.dto.UserDto;
 import ru.olegraskin.sugateway.oauth2.mapper.ProfileMapper;
 import ru.olegraskin.sugateway.oauth2.model.Profile;
 import ru.olegraskin.sugateway.oauth2.model.User;
+import ru.olegraskin.sugateway.oauth2.security.CurrentUser;
+import ru.olegraskin.sugateway.oauth2.security.UserPrincipal;
 import ru.olegraskin.sugateway.oauth2.service.ProfileService;
+import ru.olegraskin.sugateway.oauth2.service.UserService;
 
 @RestController
 @RequestMapping("/profiles")
@@ -18,12 +21,15 @@ public class ProfileController {
 
     private final ProfileMapper profileMapper;
     private final ProfileService profileService;
+    private final UserService userService;
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('USER')")
-    public ProfileDto getByUserId(@PathVariable("userId") Long userId) {
+    public ProfileDto getByUserId(@PathVariable("userId") Long userId,
+                                  @CurrentUser UserPrincipal userPrincipal) {
         //  profile id == user id
-        Profile profile = profileService.getProfileByUserId(userId);
+        User user = userService.getUserById(userPrincipal.getId());
+        Profile profile = profileService.getProfileByUserId(userId, user);
         return profileMapper.entityToDto(profile);
     }
 

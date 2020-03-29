@@ -22,7 +22,9 @@ public class UserDto {
 
     private Long mentorId;
 
-    private Set<Long> followingProfilesIds;
+    private Set<SimpleUserDto> followings;
+
+    private Set<SimpleUserDto> followers;
 
     private LocalDate lastPromotionDate;
 

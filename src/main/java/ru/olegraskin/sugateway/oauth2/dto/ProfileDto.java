@@ -15,7 +15,5 @@ public class ProfileDto {
 
     private String status;
 
-    private Set<Long> followersIds;
-
-    private Set<Long> whitelistIds;
+    private Set<SimpleUserDto> whitelist;
 }

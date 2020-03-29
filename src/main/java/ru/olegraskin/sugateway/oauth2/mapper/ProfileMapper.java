@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.olegraskin.sugateway.oauth2.dto.ProfileDto;
+import ru.olegraskin.sugateway.oauth2.dto.SimpleUserDto;
 import ru.olegraskin.sugateway.oauth2.model.Profile;
 import ru.olegraskin.sugateway.oauth2.model.User;
 import ru.olegraskin.sugateway.oauth2.service.UserService;
@@ -21,15 +22,10 @@ public class ProfileMapper {
     public ProfileDto entityToDto(Profile profile) {
         ProfileDto dto = modelMapper.map(profile, ProfileDto.class);
 
-        Set<Long> whiteList = profile.getWhitelist().stream()
-                .map(User::getId)
+        Set<SimpleUserDto> whiteList = profile.getWhitelist().stream()
+                .map(u -> new SimpleUserDto(u.getId(), u.getName(), u.getImageUrl()))
                 .collect(Collectors.toSet());
-        dto.setWhitelistIds(whiteList);
-
-        Set<Long> followers = profile.getFollowers().stream()
-                .map(User::getId)
-                .collect(Collectors.toSet());
-        dto.setFollowersIds(followers);
+        dto.setWhitelist(whiteList);
 
         return dto;
     }
@@ -37,15 +33,10 @@ public class ProfileMapper {
     public Profile dtoToEntity(ProfileDto dto) {
         Profile entity = modelMapper.map(dto, Profile.class);
 
-        Set<User> whiteList = dto.getWhitelistIds().stream()
-                .map(userService::getUserById)
+        Set<User> whiteList = dto.getWhitelist().stream()
+                .map(su -> userService.getUserById(su.getId()))
                 .collect(Collectors.toSet());
         entity.setWhitelist(whiteList);
-
-        Set<User> followers = dto.getFollowersIds().stream()
-                .map(userService::getUserById)
-                .collect(Collectors.toSet());
-        entity.setFollowers(followers);
 
         return entity;
     }
