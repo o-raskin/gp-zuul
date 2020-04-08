@@ -8,6 +8,10 @@ company:
 server:
   port: 8099
 
+feign:
+  hystrix:
+    enabled: true
+
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
@@ -18,7 +22,7 @@ app:
 
 spring:
   application:
-    name: zuul
+    name: gateway
   jpa:
     database: POSTGRESQL
     show-sql: true
