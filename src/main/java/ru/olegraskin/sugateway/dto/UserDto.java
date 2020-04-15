@@ -18,9 +18,9 @@ public class UserDto {
 
     private String role;
 
-    private Long positionId;
+    private PositionDto position;
 
-    private Long mentorId;
+    private SimpleUserDto mentor;
 
     private Set<SimpleUserDto> followings;
 
@@ -33,4 +33,6 @@ public class UserDto {
     private LocalDate inCompanySince;
 
     private int gradeProgress;
+
+    private boolean active;
 }

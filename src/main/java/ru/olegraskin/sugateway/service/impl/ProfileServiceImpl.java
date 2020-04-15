@@ -61,7 +61,6 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         userProfile.setUser(user);
-        userProfile.setId(userId);
 
         Set<User> defaultProfileWhiteList = new HashSet<>();
         User mentor = user.getMentor();

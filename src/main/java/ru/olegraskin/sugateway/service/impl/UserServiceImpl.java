@@ -4,11 +4,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.olegraskin.sugateway.exception.BadRequestException;
 import ru.olegraskin.sugateway.exception.ResourceNotFoundException;
 import ru.olegraskin.sugateway.model.User;
 import ru.olegraskin.sugateway.repository.UserRepository;
 import ru.olegraskin.sugateway.service.UserService;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -30,6 +32,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<User> getSubordinates(@NonNull Long id) {
         return userRepository.findUsersByMentorId(id);
+    }
+
+    //todo: replace for pagination
+    @Override
+    public Set<User> getAllUsers() {
+        return new HashSet<>(userRepository.findAll());
+    }
+
+    @Override
+    public User update(@NonNull User user) {
+        validateUserData(user);
+        return userRepository.save(user);
+    }
+
+    private void validateUserData(@NonNull User user) {
+        User mentor = user.getMentor();
+        if (mentor != null) {
+            User mentorOfMentor = mentor.getMentor();
+            if (mentorOfMentor != null && mentorOfMentor.getId().equals(user.getId())) {
+                throw new BadRequestException("User cannot be selected as mentor, he is already has current user as mentor");
+            }
+        }
     }
 
     @Transactional

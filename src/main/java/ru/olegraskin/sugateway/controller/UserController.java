@@ -1,7 +1,13 @@
 package ru.olegraskin.sugateway.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.olegraskin.sugateway.client.SkillsClient;
@@ -28,6 +34,16 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final SkillsClient skillsClient;
+    private final ObjectMapper objectMapper;
+
+    //TODO: replace user role for 'HR' and higher in future
+    @GetMapping
+    @PreAuthorize("hasRole('USER')")
+    public Set<UserDto> getAllUsers(@CurrentUser UserPrincipal userPrincipal) {
+        return userService.getAllUsers().stream()
+                .map(userMapper::entityToDto)
+                .collect(Collectors.toSet());
+    }
 
     @GetMapping("/current")
     @PreAuthorize("hasRole('USER')")
@@ -75,4 +91,27 @@ public class UserController {
                 .collect(Collectors.toSet());
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public UserDto updateUser(@PathVariable("id") Long id, @RequestBody UserDto dto) {
+        dto.setId(id);
+        User user = userMapper.dtoToEntity(dto);
+        User updatedUser = userService.update(user);
+        return userMapper.entityToDto(updatedUser);
+    }
+
+    @PatchMapping("/{id}")
+    public UserDto updateUserWithPatch(@PathVariable Long id, @RequestBody JsonPatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        User user = userService.getUserById(id);
+        JsonNode patchedNode = patch.apply(objectMapper.convertValue(user, JsonNode.class));
+        User patchedUser = objectMapper.treeToValue(patchedNode, User.class);
+
+        if (!user.getPosition().equals(patchedUser.getPosition())) {
+            // do request to skills app and set grade to 'null'
+        }
+
+        User updatedUser = userService.update(patchedUser);
+        return userMapper.entityToDto(updatedUser);
+    }
 }

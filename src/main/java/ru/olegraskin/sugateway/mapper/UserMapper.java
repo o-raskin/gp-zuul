@@ -1,13 +1,17 @@
 package ru.olegraskin.sugateway.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.olegraskin.sugateway.client.SkillsClient;
+import ru.olegraskin.sugateway.dto.PositionDto;
 import ru.olegraskin.sugateway.dto.SimpleUserDto;
 import ru.olegraskin.sugateway.dto.UserDto;
 import ru.olegraskin.sugateway.dto.skills.SkillsUserDto;
+import ru.olegraskin.sugateway.model.Position;
 import ru.olegraskin.sugateway.model.User;
+import ru.olegraskin.sugateway.service.PositionService;
 import ru.olegraskin.sugateway.service.UserService;
 
 import java.util.Objects;
@@ -19,14 +23,18 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final ModelMapper modelMapper;
+    private final SimpleUserMapper simpleUserMapper;
     private final UserService userService;
+    private final PositionService positionService;
     private final SkillsClient skillsClient;
 
     public UserDto entityToDto(User entity) {
         UserDto dto = modelMapper.map(entity, UserDto.class);
 
-        if (entity.getMentor() != null) {
-            dto.setMentorId(entity.getMentor().getId());
+        User mentor = entity.getMentor();
+        if (mentor != null) {
+            SimpleUserDto simpleMentor = simpleUserMapper.entityToDto(mentor);
+            dto.setMentor(simpleMentor);
         }
 
         Set<SimpleUserDto> followings = entity.getFollowing().stream()
@@ -50,9 +58,10 @@ public class UserMapper {
     public User dtoToEntity(UserDto dto) {
         User entity = modelMapper.map(dto, User.class);
 
-        if (dto.getMentorId() != null) {
-            User user = userService.getUserById(dto.getId());
-            entity.setMentor(user);
+        SimpleUserDto simpleMentor = dto.getMentor();
+        if (simpleMentor != null) {
+            User mentor = simpleUserMapper.dtoToEntity(simpleMentor);
+            entity.setMentor(mentor);
         }
 
         Set<User> followings = dto.getFollowings().stream()
