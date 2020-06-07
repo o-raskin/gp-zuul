@@ -10,4 +10,5 @@
     <include file="db/changelog/22032020000003_add_user_mentor_id_field.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/22032020000004_add_profile_users_tables.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/25032020000000_add_user_in_company_since_field.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/23042020000000_add_modified_in_users_table.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

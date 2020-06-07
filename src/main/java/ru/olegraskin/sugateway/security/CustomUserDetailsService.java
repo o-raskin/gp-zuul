@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.olegraskin.sugateway.exception.ResourceNotFoundException;
-import ru.olegraskin.sugateway.model.User;
-import ru.olegraskin.sugateway.repository.UserRepository;
+import ru.olegraskin.sugateway.user.model.User;
+import ru.olegraskin.sugateway.user.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor

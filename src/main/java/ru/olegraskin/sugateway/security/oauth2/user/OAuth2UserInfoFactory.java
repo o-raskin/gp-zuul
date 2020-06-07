@@ -2,7 +2,7 @@ package ru.olegraskin.sugateway.security.oauth2.user;
 
 
 import ru.olegraskin.sugateway.exception.OAuth2AuthenticationProcessingException;
-import ru.olegraskin.sugateway.model.AuthProvider;
+import ru.olegraskin.sugateway.security.model.AuthProvider;
 
 import java.util.Map;
 

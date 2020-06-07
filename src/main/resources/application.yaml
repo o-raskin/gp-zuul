@@ -20,6 +20,14 @@ app:
     authorizedRedirectUris:
       - http://localhost:4040/login
 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
 spring:
   application:
     name: gateway
@@ -61,6 +69,11 @@ eureka:
     appname: gateway
     instance-id: gateway:${spring.application.instance-id:${random.value}}
     prefer-ip-address: true
+
+# Increase Ribbon timeout per each request
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
 
   #   Allow use Spring Actuator with Spring Security
   #management:
